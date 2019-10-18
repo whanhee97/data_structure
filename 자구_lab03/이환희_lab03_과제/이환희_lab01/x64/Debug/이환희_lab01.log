@@ -1,0 +1,11 @@
+﻿  Application.cpp
+C:\Users\Aero 15\Desktop\2019-2\자료구조\자구_lab03\이환희_lab03_과제\이환희_lab01\Application.cpp(156,6): warning C4101:  'iid' :참조되지 않은 지역 변수입니다.
+C:\Users\Aero 15\Desktop\2019-2\자료구조\자구_lab03\이환희_lab03_과제\이환희_lab01\Application.cpp(173,6): warning C4101:  'iid' :참조되지 않은 지역 변수입니다.
+  CircularQueueType.cpp
+  ItemType.cpp
+  main.cpp
+  PlayItemType.cpp
+  SortedList.cpp
+  코드를 생성하고 있습니다...
+C:\Users\Aero 15\Desktop\2019-2\자료구조\자구_lab03\이환희_lab03_과제\이환희_lab01\Application.cpp(241,6): warning C4101:  'index' :참조되지 않은 지역 변수입니다.
+  이환희_lab01.vcxproj -> C:\Users\Aero 15\Desktop\2019-2\자료구조\자구_lab03\이환희_lab03_과제\x64\Debug\이환희_lab01.exe
