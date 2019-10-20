@@ -94,6 +94,10 @@ void Application::Run()
 			DeleteSong();
 			break;
 
+		case 18:
+			ShowFolderList();
+			break;
+
 		case 0:
 			return;
 
@@ -132,7 +136,8 @@ int Application::GetCommand()
 	cout << "\t  17 : Delete Song(Only in SongList)" << endl;
 
 	cout << endl << "\t-----------------------" << endl;
-	cout <<"\t   0 : Quit" << endl;
+	cout << "\t  18 : Folder List" << endl;
+	cout << "\t   0 : Quit" << endl;
 
 	cout << endl << "\t Choose a Command--> ";
 	cin >> command;
@@ -340,7 +345,7 @@ void Application::ReplaceMusic()
 void Application::AddToPlayList()
 {
 	PlayItemType data;
-	ItemType temp;
+	ItemType temp; //마스터리스트의 아이템
 	string id;
 	cout << "id를 입력하시오 : ";
 	cin >> id;
@@ -588,6 +593,8 @@ void Application::AddSong()
 	SingerType item;
 	ItemType Song;
 	string _name;
+	string _id;
+	int answer;
 	cout << "검색할 가수명을 입력하시오 : ";
 	cin >> _name;
 	item.SetName(_name);
@@ -595,21 +602,47 @@ void Application::AddSong()
 	if (result == 1)
 	{
 		cout << "곡을 추가 합니다." << endl;
-		Song.SetRecordFromKB();
-		m_List.Add(Song);
-		item.AddSong(Song.GetId()); // id만 가수의 노래리스트에 추가
-		m_SingerList.Replace(item);//리플레이스
+		cout << "1. 직접추가" << endl;
+		cout << "2. 곡 리스트에서 추가" << endl;
+		cout << "Command : ";
+		cin >> answer;
+		if (answer == 1)
+		{
+			cout << "\n곡을 직접 추가합니다.\n" << endl;
+			Song.SetRecordFromKB();
+			m_List.Add(Song);
+			item.AddSong(Song.GetId()); // id만 가수의 노래리스트에 추가
+			m_SingerList.Replace(item);//리플레이스
+		}
+		else if (answer == 2)
+		{
+			cout << "\n\t----------Master List----------\n" << endl;
+			DisplayAllMusic();
+			cout << "\n\t----------Master List----------\n" << endl;
+			cout << "ID를 입력하시오 : ";
+			cin >> _id;
+			Song.SetId(_id);
+			result = m_List.RetrieveBinary(Song);
+			if (result == 1)
+			{
+				item.AddSong(_id);
+				m_SingerList.Replace(item);
+			}
+			else
+			{
+				cout << "해당 ID가 없습니다." << endl;
+			}
+
+		}
+		else
+		{
+			cout << "잘못된 입력입니다." << endl;
+		}
 	}
 	else
 	{
-		cout << "해당하는 가수가 없습니다. 가수를 추가합니다." << endl;
-		AddSinger(); // 가수추가하고
-		m_SingerList.Retrieve(item); // 다시 찾아서 item값 갖고온후
-		cout << "곡을 추가 합니다." << endl;
-		Song.SetRecordFromKB(); 
-		m_List.Add(Song); //노래 추가
-		item.AddSong(Song.GetId());
-		m_SingerList.Replace(item);
+		cout << "해당하는 가수가 없습니다." << endl;
+		
 	}
 }
 void Application::DeleteSong()
@@ -631,5 +664,152 @@ void Application::DeleteSong()
 	else
 	{
 		cout << "해당하는 가수가 없습니다." << endl;
+	}
+}
+
+void Application::ShowFolderList()
+{
+	while (1) 
+	{
+		cout << "\t---------폴더 목록---------" << endl;
+		if (m_FolderList.IsEmpty())
+		{
+			cout << "\t폴더가 없습니다.\n" << endl;
+		}
+		else
+		{
+			for (int i = 0; i < m_FolderList.GetLength(); i++)
+			{
+				cout << "\t[ " << m_FolderList[i].GetName() << " ]" << endl;
+			}
+		}
+		//------------------------------------
+
+		int answer;
+		cout << "\t--------Command---------" << endl;
+		cout << "\t   1 : Create Folder" << endl;
+		cout << "\t   2 : Delete Folder" << endl;
+		cout << "\t   3 : ReName Folder" << endl;
+		cout << "\t   4 : Access Folder" << endl;
+		cout << "\t   5 : Exit" << endl;
+		cout << endl << "\t Choose a Command--> ";
+		cin >> answer;
+		
+		FolderType temp;
+		
+		ItemType item;
+
+
+		int result;
+		switch (answer)
+		{
+		case 1: //폴더 생성
+			cout << "생성할 폴더 ";
+			temp.SetNameFromKB();
+			m_FolderList.Add(temp);
+			break;
+
+		case 2: //폴더 삭제
+			cout << "삭제할 폴더 ";
+			temp.SetNameFromKB();
+			m_FolderList.Delete(temp);
+			break;
+
+		case 3: // 폴더 이름변경
+			cout << "변경할 폴더 ";
+			temp.SetNameFromKB();
+			result = m_FolderList.Retrieve(temp);
+			if (result == 1)
+			{
+				string cname; // 변경할 이름
+				cout << "변경할 이름을 입력하시오 : ";
+				cin >> cname;
+				temp.SetName(cname);
+				m_FolderList.Replace(temp);
+			}
+			else
+			{
+				cout << "해당 이름의 폴더를 찾을 수 없습니다." << endl;
+			}
+			break;
+
+		case 4: // 폴더 접근
+			cout << "접근할 폴더 ";
+			temp.SetNameFromKB();
+			result = m_FolderList.Retrieve(temp);
+			if (result == 1)
+			{
+				while (1)
+				{
+					cout << endl << "\t------------[ " << temp.GetName() << " ]------------" << endl;
+					
+					temp.DisplayAllSong();
+					
+					cout << endl << "\t------------[ " << temp.GetName() << " ]------------" << endl;
+
+					cout << "1. Add Song" << endl;
+					cout << "2. Delete Song" << endl;
+					cout << "3. Add to PlayList" << endl;
+					cout << "4. Exit" << endl;
+					cout << "Your Command : ";
+					cin >> answer;
+					
+					if (answer == 4)
+					{
+						break;
+					}
+					switch (answer)
+					{
+					case 1:
+						cout << endl << "\t---------Master List----------" << endl;
+						DisplayAllMusic();
+						cout << endl << "\t---------Master List----------" << endl;
+
+						cout << "\n추가할 ";
+						item.SetIdFromKB(); // id셋팅하고
+						result = m_List.RetrieveBinary(item); // 해당아이디의 아이템 가져와서
+						if (result == 1)
+						{
+							temp.AddSong(item);
+							m_FolderList.Replace(temp);
+						}
+						else
+						{
+							cout << "해당 ID가 없습니다." << endl;
+						}
+
+						break;
+
+					case 2:
+						break;
+
+					case 3:
+						break;
+
+					default:
+						cout << "\tIllegal selection...\n";
+						break;
+
+					}
+				}
+
+				
+			}
+			else
+			{
+				cout << "해당 이름의 폴더를 찾을 수 없습니다." << endl;
+			}
+			break;
+		
+		case 5:
+			return;
+
+		default:
+			cout << "\tIllegal selection...\n";
+			break;
+
+		}
+		
+
 	}
 }

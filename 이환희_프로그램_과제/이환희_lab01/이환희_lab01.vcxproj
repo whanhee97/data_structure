@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CircularQueueType.cpp" />
+    <ClCompile Include="FolderType.cpp" />
     <ClCompile Include="ItemType.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayItemType.cpp" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="CircularQueueType.h" />
+    <ClInclude Include="FolderType.h" />
     <ClInclude Include="ItemType.h" />
     <ClInclude Include="PlayItemType.h" />
     <ClInclude Include="SingerType.h" />

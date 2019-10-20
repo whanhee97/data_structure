@@ -66,19 +66,19 @@ void ItemType::SetRedcord(int inType, string inName, string inComp, string inSin
 void ItemType::DisplayRecordOnScreen()
 {
 	cout << endl;
-	cout << "Type(1.가요 2.연주) : " << m_Type << endl;
-	cout << "Name : " << m_Name << endl;
-	cout << "Composer : " << m_Composer << endl;
-	cout << "Singer : " << m_Singer << endl;
-	cout << "Genre : " << m_Genre << endl;
-	cout << "ID : " << m_Id << endl;
+	cout << "\tType(1.가요 2.연주) : " << m_Type << endl;
+	cout << "\tName : " << m_Name << endl;
+	cout << "\tComposer : " << m_Composer << endl;
+	cout << "\tSinger : " << m_Singer << endl;
+	cout << "\tGenre : " << m_Genre << endl;
+	cout << "\tID : " << m_Id << endl;
 }
 
 
 void ItemType::SetIdFromKB()
 {
 	string id;
-	cout << "고유번호를 입력하시오: ";
+	cout << "ID를 입력하시오: ";
 	cin >> id;
 	m_Id = id;
 }

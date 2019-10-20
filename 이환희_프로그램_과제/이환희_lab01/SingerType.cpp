@@ -78,7 +78,7 @@ void SingerType::AddSong(string _id)
 
 void SingerType::DeleteSong(string _id)
 {
-	SongList.DeQueue(_id);
+	SongList.Delete(_id);
 }
 
 bool SingerType::operator==(SingerType& data)
@@ -101,7 +101,7 @@ void SingerType::Print()
 	cout << "이름 : " << name << endl;
 	cout << "나이 : " << age << endl;
 	cout << "성별 : " << sex << " (1.남 2.여)"<< endl;
-	cout << "--- 곡정보 ---" << endl;
+	cout << "--- 곡정보 -------------------------" << endl;
 }
 
 

@@ -9,6 +9,7 @@
 #include"SortedLinkedList.h"
 #include"SingerType.h"
 #include"PlayItemType.h"
+#include"FolderType.h"
 
 
 using namespace std;
@@ -29,6 +30,7 @@ class Application
 	CircularQueueType<PlayItemType> m_PlayList;
 	SortedLinkedList<SingerType> m_SingerList;
 	CircularQueueType<PlayItemType> m_RandomPlay;
+	UnSortedList<FolderType> m_FolderList;
 
 	int m_Command;
 
@@ -155,6 +157,11 @@ public:
 	*/
 	void DeleteFrPlayList();
 	
+	/**
+	*@brief 랜덤재생
+	*@pre 리스트가 비워져있으면 안됨
+	*@post 플레이리스트에 아이템을 랜덤으로 재생후 다 끝나면 리스트를 지움.
+	*/
 	void SufflePlay();
 
 	//-----------------------------------
@@ -173,5 +180,19 @@ public:
 	*/
 	void AddSong();
 
+
+	/**
+	*@brief 아이템 지우기
+	*@pre 리스트가 비워져있으면 안됨
+	*@post 곡 리스트에 아이템이 지워짐.
+	*/
 	void DeleteSong();
+	//----------------------------------------
+	
+
+	/**
+	*@brief 폴더보이기
+	*@pre 리스트가 비워져있으면 안됨
+	*/
+	void ShowFolderList();
 };

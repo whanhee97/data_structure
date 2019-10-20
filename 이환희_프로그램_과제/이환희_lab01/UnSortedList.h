@@ -24,7 +24,15 @@ public:
 
 	UnSortedList(const UnSortedList& S); // 깊은 복사
 
-	UnSortedList<T>& operator= (UnSortedList<T>& S);
+	/**
+	*@brief 깊은 복사로 =연산자 수행
+	*/
+	UnSortedList<T>& operator= (const UnSortedList<T>& S);
+	
+
+	/**
+	*@brief []연산자로 접근을 가능하게 해줌
+	*/
 	T& operator[] (int index);
 
 	/**
@@ -143,7 +151,7 @@ inline UnSortedList<T>::UnSortedList(const UnSortedList& S)
 }
 
 template<class T>
-inline UnSortedList<T>& UnSortedList<T>::operator=(UnSortedList<T>& S)
+inline UnSortedList<T>& UnSortedList<T>::operator=(const UnSortedList<T>& S)
 {
 	m_Length = S.m_Length;
 	m_CurPointer = S.m_CurPointer;
