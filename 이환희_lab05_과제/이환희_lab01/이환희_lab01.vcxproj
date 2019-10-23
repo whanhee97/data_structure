@@ -23,7 +23,6 @@
     <ClCompile Include="CircularQueueType.cpp" />
     <ClCompile Include="DoublyIterator.cpp" />
     <ClCompile Include="DoublyLinkedList.cpp" />
-    <ClCompile Include="FolderType.cpp" />
     <ClCompile Include="ItemType.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayItemType.cpp" />
@@ -37,7 +36,6 @@
     <ClInclude Include="CircularQueueType.h" />
     <ClInclude Include="DoublyIterator.h" />
     <ClInclude Include="DoublyLinkedList.h" />
-    <ClInclude Include="FolderType.h" />
     <ClInclude Include="ItemType.h" />
     <ClInclude Include="PlayItemType.h" />
     <ClInclude Include="SingerType.h" />

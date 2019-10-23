@@ -58,16 +58,7 @@ void Application::Run()
 			break;
 
 		case 11:
-			int a;
-			cout << "1.일반재생   2.셔플재생" << endl;
-			cout << "Answer : ";
-			cin >> a;
-			if (a == 1)
-				PlayInsertOrder();
-			else if (a == 2)
-				SufflePlay();
-			else
-				cout << "잘못입력!!" << endl;
+			PlayInsertOrder();
 			break;
 
 		case 12:
@@ -95,10 +86,15 @@ void Application::Run()
 			break;
 
 		case 18:
-			ShowFolderList();
+			PlayIOFreq();
+			break;
+		
+		case 19:
+			SufflePlay();
 			break;
 
 		case 0:
+
 			return;
 
 		default:
@@ -125,10 +121,12 @@ int Application::GetCommand()
 	cout << "\t  10 : Search by genre" << endl << endl;
 	
 	cout << "\t-------- PlayList --------" << endl;
-	cout << "\t  11 : Play PlayList" << endl;
+	cout << "\t  11 : Play PlayList(Add Time)" << endl;
 	cout << "\t  12 : Add To PlayList" << endl;
 	cout << "\t  13 : Show PlayList" << endl;
-	cout << "\t  14 : Delete PlayList" << endl << endl;
+	cout << "\t  14 : Delete PlayList" << endl;
+	cout << "\t  18 : Play PlayList(Frequency)" << endl;
+	cout << "\t  19 : Play PlayList(Suffle)" << endl << endl;
 
 	cout << "\t-------- Singer --------" << endl;
 	cout << "\t  15 : Add Singer" << endl;
@@ -136,8 +134,7 @@ int Application::GetCommand()
 	cout << "\t  17 : Delete Song(Only in SongList)" << endl;
 
 	cout << endl << "\t-----------------------" << endl;
-	cout << "\t  18 : Folder List" << endl;
-	cout << "\t   0 : Quit" << endl;
+	cout <<"\t   0 : Quit" << endl;
 
 	cout << endl << "\t Choose a Command--> ";
 	cin >> command;
@@ -227,7 +224,7 @@ void Application::SearchBySinger()
 	cout << "검색할 가수명을 입력하시오: ";
 	cin >> singer; //가수명 입력받고
 	stemp.SetName(singer); //임시 변수에 가수명 셋팅
-	int result = m_SingerList.Retrieve(stemp); // 결과가 1이면 찾은것 0이면 못찾은것. 찾으면 stemp에 값이 복사됨. // 여기서 stemp가 얕은복사가됨
+	int result = m_SingerList.Get(stemp); // 결과가 1이면 찾은것 0이면 못찾은것. 찾으면 stemp에 값이 복사됨. // 여기서 stemp가 얕은복사가됨
 	if (result == 1) //찾았으면
 	{
 		stemp.Print(); //이름 나이 성별 출력하고
@@ -345,13 +342,8 @@ void Application::ReplaceMusic()
 void Application::AddToPlayList()
 {
 	PlayItemType data;
-	ItemType temp; //마스터리스트의 아이템
+	ItemType temp;
 	string id;
-
-	cout << "\n\t----------Master List----------\n" << endl;
-	DisplayAllMusic();
-	cout << "\n\t----------Master List----------\n" << endl;
-
 	cout << "id를 입력하시오 : ";
 	cin >> id;
 	temp.SetId(id);
@@ -364,7 +356,7 @@ void Application::AddToPlayList()
 	}
 	data.SetID(id);
 	
-	m_PlayList.EnQueue(data); // data를 인큐
+	m_PlayList.Add(data); // data를 추가
 }
 
 void Application::PrintAll()
@@ -377,34 +369,29 @@ void Application::PrintAll()
 	}
 	// 임시로 아이템 만들고
 	ItemType data;
-	m_PlayList.ResetList(); // m_Queue의 curpointer 초기화
+	DoublyIterator<PlayItemType> itor(m_PlayList);
 	PlayItemType item;
-	int Curpointer = m_PlayList.GetNextItem(item);
+	item = itor.Next(); // 
+	
+	
 
-	while (1)
+	while (itor.NextNotNull())
 	{
 		data.SetId(item.GetID()); // data 에 아이템의 아이디 받아와서
 		m_List.RetrieveBinary(data); // m_list에서 해당 아이디 찾아서 data 집어넣은후
-		if (Curpointer == m_PlayList.GetRear())
-		{
-			
-			data.DisplayRecordOnScreen(); // data출력
-			item.PrintPN();// 플레이 횟수 출력
-			break;
-		}
 		data.DisplayRecordOnScreen(); 
 		item.PrintPN();// 플레이 횟수 출력
-		Curpointer = m_PlayList.GetNextItem(item);// 다음 아이템으로 이터레이터를 옮김
+		item = itor.Next();// 다음 아이템으로 이터레이터를 옮김
 	}
 }
 
 
-void Application::PlayInsertOrder()
+void Application::PlayInsertOrder() // 플레이리스트 추가된 순으로 play
 {
 	ItemType data;
 	PlayItemType temp;
-	m_PlayList.ResetList();
-	int Curpointer = m_PlayList.GetNextItem(temp);
+	DoublyIterator<PlayItemType> itor(m_PlayList);
+	temp = itor.Next();
 	string id;
 	if (m_PlayList.IsEmpty())
 	{
@@ -413,10 +400,12 @@ void Application::PlayInsertOrder()
 	}
 
 
-	while (1) {
+	while (1)
+	{
 		id = temp.GetID();
-		temp.NumPlayUP(); // 플레이 횟수 올려주고
-		m_PlayList.Replace(temp); // 올려준거 실제 리스트아이템과 교체
+		temp.NumPlayUP(); // 플레이 횟수 업
+		m_PlayList.Replace(temp); // 횟수 업 해줬으므로 교체
+		
 		data.SetId(id);
 		m_List.RetrieveBinary(data);
 		data.DisplayRecordOnScreen();
@@ -431,11 +420,11 @@ void Application::PlayInsertOrder()
 		}
 		else if (answer == 1) 
 		{
-			if (Curpointer == m_PlayList.GetRear())
+			if (itor.IsNextLast()) // 넥스트가 라스트면
 			{
-				m_PlayList.ResetList();
+				itor.First();
 			}
-			Curpointer = m_PlayList.GetNextItem(temp);
+			temp = itor.Next();
 		}
 		else
 		{
@@ -443,6 +432,95 @@ void Application::PlayInsertOrder()
 			return;
 		}
 	}
+}
+
+void Application::PlayIOFreq()
+{
+	if (m_PlayList.IsEmpty())
+	{
+		cout << "플레이 리스트가 비었습니다." << endl;
+		return;
+	}
+
+	UnSortedList<PlayItemType> tempList(m_PlayList.GetLength());
+	DoublyIterator<PlayItemType> itor(m_PlayList);
+	itor.Next();
+	while (itor.NextNotNull())
+	{
+		tempList.Add(itor.GetCurrentNode().info);
+		itor.Next();
+	} //새로운 리스트에 다 옮기고
+
+	int index = 0, cur, max;
+	PlayItemType temp;
+	while (index != m_PlayList.GetLength()-1)
+	{
+		cur = index + 1;
+		max = index;
+		while (cur != m_PlayList.GetLength())
+		{
+			if (tempList[cur].GetNumPlay() > tempList[max].GetNumPlay())
+			{
+				max = cur;
+			}
+			cur++;
+		}
+		temp = tempList[index];
+		tempList[index] = tempList[max];
+		tempList[max] = temp;
+		index++;
+	}
+	//선택정렬
+
+	for (int i = 0; i < tempList.GetLength(); i++)
+	{
+		m_PLSortedByFreq.Add(tempList[i]);
+	}
+	//리스트에 추가하고
+
+	//여기서 부터는 출력--------------------------------------
+	ItemType data;
+	DoublyIterator<PlayItemType> itor1(m_PLSortedByFreq);
+	temp = itor1.Next();
+	string id;
+
+
+	while (1)
+	{
+		id = temp.GetID();
+		temp.NumPlayUP(); // 플레이 횟수 업
+		m_PLSortedByFreq.Replace(temp); // 횟수 업 해줬으므로 교체
+		m_PlayList.Replace(temp); // 플레이 리스트도 교체
+
+
+		data.SetId(id);
+		m_List.RetrieveBinary(data);
+		data.DisplayRecordOnScreen();
+		temp.PrintPN();
+
+		int answer;
+		cout << "다음곡을 플레이 하시겠습니까? 1.yes  2.no  : ";
+		cin >> answer;
+
+		if (answer == 2)
+		{
+			return;
+		}
+		else if (answer == 1)
+		{
+			if (itor1.IsNextLast()) // 넥스트가 라스트면
+			{
+				itor1.First();
+			}
+			temp = itor1.Next();
+		}
+		else
+		{
+			cout << "잘못된 입력입니다." << endl;
+			return;
+		}
+	}
+
 }
 
 void Application::DeleteFrPlayList()
@@ -473,28 +551,24 @@ void Application::SufflePlay()
 		cout << "플레이 리스트가 비었습니다." << endl;
 		return;
 	}
-	
-	
+
+
 	if (m_RandomPlay.IsEmpty()) // 랜덤플레이리스트가 비어있으면 실행
 	{
-		int top = m_PlayList.GetTop(); // 플레이리스트 음악 개수
+		int top = m_PlayList.GetLength();
 		UnSortedList<PlayItemType> temp(top); // 음악 개수만큼 리스트 생성
-
+		
 		PlayItemType item; //임시 플레이타입 아이템 만들고
-		m_PlayList.ResetList();
-		int Cur = m_PlayList.GetNextItem(item);
+		DoublyIterator<PlayItemType> itor(m_PlayList);
+		itor.Next();
 
-		while (1)
+		while (itor.NextNotNull())
 		{
-			if (Cur == m_PlayList.GetRear())
-			{
-				temp.Add(item); // 리스트에 갖고온 아이템 추가
-				break;
-			}
-			temp.Add(item);
-			Cur = m_PlayList.GetNextItem(item);
+			temp.Add(itor.GetCurrentNode().info);
+			itor.Next();
 		}
 		//------ 플레이리스트 내용물이 리스트로 옮겨졌음.
+
 		UnSortedList<PlayItemType> NewList(top); // 새로운 리스트 생성(셔플이 이루어 질것임)
 		srand(time(NULL));
 		int index = rand() % top;
@@ -531,7 +605,7 @@ void Application::SufflePlay()
 
 		for (int i = 0; i < top; i++) // 랜덤플레이리스트에 NewList(셔플된)내용 인큐
 		{
-			m_RandomPlay.EnQueue(NewList[i]);
+			m_RandomPlay.Add(NewList[i]);
 		}
 
 		delete[] CheckArr;
@@ -539,8 +613,8 @@ void Application::SufflePlay()
 	//-------------------------------여기서부턴 플레이리스트 플레이와 동일 단 랜덤플레이리스트를 플레이
 	ItemType data;
 	PlayItemType item;
-	m_RandomPlay.ResetList();
-	int Cur = m_RandomPlay.GetNextItem(item);
+	DoublyIterator<PlayItemType> itor1(m_RandomPlay);
+	item = itor1.Next();
 	string id;
 	if (m_RandomPlay.IsEmpty())
 	{
@@ -549,9 +623,10 @@ void Application::SufflePlay()
 	}
 
 
-	while (1) {
+	while (1) 
+	{
 		id = item.GetID();
-		m_PlayList.Search(item);// 플레이리스트에서 아이템과 일치하는 항목 불러오기
+		m_PlayList.Get(item);// 플레이리스트에서 아이템과 일치하는 항목 불러오기
 		item.NumPlayUP(); // 플레이 횟수 올려주고
 		m_PlayList.Replace(item); // 올려준거 실제 리스트아이템과 교체
 		data.SetId(id);
@@ -569,11 +644,11 @@ void Application::SufflePlay()
 		}
 		else if (answer == 1)
 		{
-			if (Cur == m_RandomPlay.GetRear())
+			if (itor1.IsNextLast()) // 넥스트가 라스트면
 			{
-				m_RandomPlay.ResetList();
+				itor1.First();
 			}
-			Cur = m_RandomPlay.GetNextItem(item);
+			item = itor1.Next();
 		}
 		else
 		{
@@ -581,7 +656,7 @@ void Application::SufflePlay()
 			return;
 		}
 	}
-	
+
 }
 
 
@@ -590,7 +665,7 @@ void Application::AddSinger()
 {
 	SingerType item;
 	item.SetRecordByKB();
-	m_SingerList.AddItem(item);
+	m_SingerList.Add(item);
 }
 
 void Application::AddSong()
@@ -598,56 +673,28 @@ void Application::AddSong()
 	SingerType item;
 	ItemType Song;
 	string _name;
-	string _id;
-	int answer;
 	cout << "검색할 가수명을 입력하시오 : ";
 	cin >> _name;
 	item.SetName(_name);
-	int result = m_SingerList.Retrieve(item);
+	int result = m_SingerList.Get(item);
 	if (result == 1)
 	{
 		cout << "곡을 추가 합니다." << endl;
-		cout << "1. 직접추가" << endl;
-		cout << "2. 곡 리스트에서 추가" << endl;
-		cout << "Command : ";
-		cin >> answer;
-		if (answer == 1)
-		{
-			cout << "\n곡을 직접 추가합니다.\n" << endl;
-			Song.SetRecordFromKB();
-			m_List.Add(Song);
-			item.AddSong(Song.GetId()); // id만 가수의 노래리스트에 추가
-			m_SingerList.Replace(item);//리플레이스
-		}
-		else if (answer == 2)
-		{
-			cout << "\n\t----------Master List----------\n" << endl;
-			DisplayAllMusic();
-			cout << "\n\t----------Master List----------\n" << endl;
-			cout << "ID를 입력하시오 : ";
-			cin >> _id;
-			Song.SetId(_id);
-			result = m_List.RetrieveBinary(Song);
-			if (result == 1)
-			{
-				item.AddSong(_id);
-				m_SingerList.Replace(item);
-			}
-			else
-			{
-				cout << "해당 ID가 없습니다." << endl;
-			}
-
-		}
-		else
-		{
-			cout << "잘못된 입력입니다." << endl;
-		}
+		Song.SetRecordFromKB();
+		m_List.Add(Song);
+		item.AddSong(Song.GetId()); // id만 가수의 노래리스트에 추가
+		m_SingerList.Replace(item);//리플레이스
 	}
 	else
 	{
-		cout << "해당하는 가수가 없습니다." << endl;
-		
+		cout << "해당하는 가수가 없습니다. 가수를 추가합니다." << endl;
+		AddSinger(); // 가수추가하고
+		m_SingerList.Get(item); // 다시 찾아서 item값 갖고온후
+		cout << "곡을 추가 합니다." << endl;
+		Song.SetRecordFromKB(); 
+		m_List.Add(Song); //노래 추가
+		item.AddSong(Song.GetId());
+		m_SingerList.Replace(item);
 	}
 }
 void Application::DeleteSong()
@@ -658,7 +705,7 @@ void Application::DeleteSong()
 	cout << "검색할 가수명을 입력하시오 : ";
 	cin >> _name;
 	item.SetName(_name);
-	int result = m_SingerList.Retrieve(item);
+	int result = m_SingerList.Get(item);
 	if (result == 1)
 	{
 		cout << "곡을 제거 합니다." << endl;
@@ -669,200 +716,5 @@ void Application::DeleteSong()
 	else
 	{
 		cout << "해당하는 가수가 없습니다." << endl;
-	}
-}
-
-void Application::ShowFolderList()
-{
-	while (1) 
-	{
-		cout << "\t---------폴더 목록---------" << endl;
-		if (m_FolderList.IsEmpty())
-		{
-			cout << "\t폴더가 없습니다.\n" << endl;
-		}
-		else
-		{
-			for (int i = 0; i < m_FolderList.GetLength(); i++)
-			{
-				cout << "\t[ " << m_FolderList[i].GetName() << " ]" << endl;
-			}
-		}
-		//------------------------------------
-
-		int answer;
-		cout << "\t--------Command---------" << endl;
-		cout << "\t   1 : Create Folder" << endl;
-		cout << "\t   2 : Delete Folder" << endl;
-		cout << "\t   3 : ReName Folder" << endl;
-		cout << "\t   4 : Access Folder" << endl;
-		cout << "\t   5 : Exit" << endl;
-		cout << endl << "\t Choose a Command--> ";
-		cin >> answer;
-		
-		FolderType tempF;
-		PlayItemType PlayTemp;
-		ItemType item;
-
-
-		int result;
-		switch (answer)
-		{
-		case 1: //폴더 생성
-			cout << "생성할 폴더 ";
-			tempF.SetNameFromKB();
-			m_FolderList.Add(tempF);
-			break;
-
-		case 2: //폴더 삭제
-			cout << "삭제할 폴더 ";
-			tempF.SetNameFromKB();
-			m_FolderList.Delete(tempF);
-			break;
-
-		case 3: // 폴더 이름변경
-			cout << "변경할 폴더 ";
-			tempF.SetNameFromKB();
-			result = m_FolderList.Retrieve(tempF);
-			if (result == 1)
-			{
-				string cname; // 변경할 이름
-				cout << "변경할 이름을 입력하시오 : ";
-				cin >> cname;
-				tempF.SetName(cname);
-				m_FolderList.Replace(tempF);
-			}
-			else
-			{
-				cout << "해당 이름의 폴더를 찾을 수 없습니다." << endl;
-			}
-			break;
-
-		case 4: // 폴더 접근
-			cout << "접근할 폴더 ";
-			tempF.SetNameFromKB();
-			result = m_FolderList.Retrieve(tempF);
-			if (result == 1)
-			{
-				while (1)
-				{
-					cout << endl << "\t------------[ " << tempF.GetName() << " ]------------" << endl;
-					
-					tempF.DisplayAllSong();
-					
-					cout << endl << "\t------------[ " << tempF.GetName() << " ]------------" << endl;
-
-					cout << "1. Add Song" << endl;
-					cout << "2. Delete Song" << endl;
-					cout << "3. Add to PlayList" << endl;
-					cout << "4. Exit" << endl;
-					cout << "Your Command : ";
-					cin >> answer;
-					
-					if (answer == 4)
-					{
-						break;
-					}
-					switch (answer)
-					{
-					case 1: //폴더에 곡추가
-						cout << endl << "\t---------Master List----------" << endl;
-						DisplayAllMusic();
-						cout << endl << "\t---------Master List----------" << endl;
-
-						cout << "\n추가할 ";
-						item.SetIdFromKB(); // id셋팅하고
-						result = m_List.RetrieveBinary(item); // 해당아이디의 아이템 가져와서
-						if (result == 1)
-						{
-							tempF.AddSong(item); //item은 노래(아이템타입)
-							m_FolderList.Replace(tempF); // temp는 폴더(폴더타입)
-						}
-						else
-						{
-							cout << "해당 ID가 없습니다." << endl;
-						}
-
-						break;
-
-					case 2: //곡 삭제
-						cout << "\n삭제할 ";
-						item.SetIdFromKB();
-						tempF.DeleteSong(item);
-						m_FolderList.Replace(tempF);
-						break;
-
-					case 3: //플레이 리스트에 추가
-						cout << "\n1. 전체 추가" << endl;
-						cout << "2. 개별 추가" << endl;
-						cout << "Command : ";
-						int cm;
-						cin >> cm;
-
-						if (cm == 1)
-						{
-							int CurP; 
-							tempF.GetSongList()->ResetList();
-							while (1)
-							{
-
-								CurP = tempF.GetSongList()->GetNextItem(item); // 아이템가져와서
-								if (CurP == tempF.GetSongList()->GetLength())
-								{
-									break;
-								}
-								PlayTemp.SetID(item.GetId()); // 아이디 셋팅하고
-								m_PlayList.EnQueue(PlayTemp);
-
-							}
-						}
-						else if (cm == 2)
-						{
-							int check;
-							cout << "\n추가할 ";
-							item.SetIdFromKB(); // 아이템타입의 아이템에 id셋팅하고
-							check = tempF.GetSongList()->Retrieve(item); // 해당 id의 아이템 가져와서 있으면 1 없으면 0리턴
-							if (check == 1)
-							{
-								PlayTemp.SetID(item.GetId());
-								m_PlayList.EnQueue(PlayTemp);
-							}
-							else
-							{
-								cout << "해당 ID가 없습니다." << endl;
-							}
-							
-						}
-						else
-						{
-							cout << "잘못된 입력입니다." << endl;
-						}
-						break;
-
-					default:
-						cout << "\tIllegal selection...\n";
-						break;
-
-					}
-				}
-
-				
-			}
-			else
-			{
-				cout << "해당 이름의 폴더를 찾을 수 없습니다." << endl;
-			}
-			break;
-		
-		case 5:
-			return;
-
-		default:
-			cout << "\tIllegal selection...\n";
-			break;
-
-		}
-		
-
 	}
 }

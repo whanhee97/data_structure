@@ -14,7 +14,7 @@ void FolderType::DisplayAllSong()
 {
 	if (songlist.GetLength() == 0)
 	{
-		cout << "폴더가 비었습니다." << endl;
+		cout << "\t폴더가 비었습니다." << endl;
 	}
 	else 
 	{
