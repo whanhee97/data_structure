@@ -456,6 +456,8 @@ void Application::DeleteFrPlayList()
 		return;
 	}
 	PlayItemType item; // 임시로 아이템 만들고
+	PrintAll();
+	cout << "삭제할 ";
 	item.SetIDFromKB(); // 키보드로 입력받고
 	int result = m_PlayList.Delete(item);
 	if (result == 0)
@@ -815,7 +817,11 @@ void Application::ShowFolderList()
 									break;
 								}
 								PlayTemp.SetID(item.GetId()); // 아이디 셋팅하고
-								m_PlayList.EnQueue(PlayTemp);
+								if (m_PlayList.Search(PlayTemp)== 0 )// 플레이 리스트에 없으면
+								{
+									m_PlayList.EnQueue(PlayTemp); //추가
+								}
+							
 
 							}
 						}
@@ -828,7 +834,14 @@ void Application::ShowFolderList()
 							if (check == 1)
 							{
 								PlayTemp.SetID(item.GetId());
-								m_PlayList.EnQueue(PlayTemp);
+								if (m_PlayList.Search(PlayTemp))// 있으면
+								{
+									cout << "이미 플레이리스트에 존재합니다." << endl;
+								} 
+								else
+								{
+									m_PlayList.EnQueue(PlayTemp); // 없으면 추가
+								}
 							}
 							else
 							{
