@@ -58,6 +58,10 @@ void Application::Run()
 			break;
 
 		case 11:
+			PlayMusic();
+			break;
+
+		case 12:
 			int a;
 			cout << "1.일반재생   2.셔플재생" << endl;
 			cout << "Answer : ";
@@ -68,10 +72,6 @@ void Application::Run()
 				SufflePlay();
 			else
 				cout << "잘못입력!!" << endl;
-			break;
-
-		case 12:
-			AddToPlayList();
 			break;
 
 		case 13:
@@ -125,8 +125,8 @@ int Application::GetCommand()
 	cout << "\t  10 : Search by genre" << endl << endl;
 	
 	cout << "\t-------- PlayList --------" << endl;
-	cout << "\t  11 : Play PlayList" << endl;
-	cout << "\t  12 : Add To PlayList" << endl;
+	cout << "\t  11 : Play Music" << endl;
+	cout << "\t  12 : Play PlayList" << endl;
 	cout << "\t  13 : Show PlayList" << endl;
 	cout << "\t  14 : Delete PlayList" << endl << endl;
 
@@ -135,8 +135,10 @@ int Application::GetCommand()
 	cout << "\t  16 : Add Song" << endl;
 	cout << "\t  17 : Delete Song(Only in SongList)" << endl;
 
-	cout << endl << "\t-----------------------" << endl;
+	cout << endl << "\t-------- Folder --------" << endl;
 	cout << "\t  18 : Folder List" << endl;
+
+	cout << endl << "\t-------- System --------" << endl;
 	cout << "\t   0 : Quit" << endl;
 
 	cout << endl << "\t Choose a Command--> ";
@@ -380,7 +382,7 @@ void Application::PrintAll()
 	m_PlayList.ResetList(); // m_Queue의 curpointer 초기화
 	PlayItemType item;
 	int Curpointer = m_PlayList.GetNextItem(item);
-
+	cout << "\n\t----------Play List----------\n" << endl;
 	while (1)
 	{
 		data.SetId(item.GetID()); // data 에 아이템의 아이디 받아와서
@@ -396,6 +398,7 @@ void Application::PrintAll()
 		item.PrintPN();// 플레이 횟수 출력
 		Curpointer = m_PlayList.GetNextItem(item);// 다음 아이템으로 이터레이터를 옮김
 	}
+	cout << "\n\t----------Play List----------\n" << endl;
 }
 
 
@@ -865,4 +868,61 @@ void Application::ShowFolderList()
 		
 
 	}
+}
+
+void Application::PlayMusic()
+{
+	string id;
+	ItemType song;
+	PlayItemType SimpleSong;
+	int answer;
+	while (1)
+	{
+		cout << "\n\t----------Master List----------\n" << endl;
+		DisplayAllMusic();
+		cout << "\n\t----------Master List----------\n" << endl;
+
+		cout << "플레이하고싶은 곡의 ID를 입력하시오 : ";
+		cin >> id;
+		song.SetId(id);
+
+		if (m_List.RetrieveBinary(song))
+		{
+			SimpleSong.SetID(id);
+			if(m_PlayList.Search(SimpleSong)) // 이미 플레이리스트에 곡이 있으면
+			{
+				SimpleSong.NumPlayUP();
+				m_PlayList.Replace(SimpleSong);
+			}
+			else // 없으면 플레이 횟수 늘리고 플레이리스트에 추가
+			{
+				if (SimpleSong.GetNumPlay() == 0)
+				{
+					SimpleSong.NumPlayUP();
+				}
+				m_PlayList.EnQueue(SimpleSong);
+			}
+			song.DisplayRecordOnScreen();
+		}
+		else
+		{
+			cout << "해당하는 ID가 없습니다." << endl;
+		}
+		cout << "다른 곡을 플레이 하시겠습니까? (1. Yes    2. No)" << endl;
+		cout << "Answer : ";
+		cin >> answer;
+		if (answer == 1)
+		{
+			continue;
+		}
+		else if (answer == 2)
+		{
+			break;
+		}
+		else
+		{
+			cout << "잘못된 입력입니다." << endl;
+		}
+	}
+
 }

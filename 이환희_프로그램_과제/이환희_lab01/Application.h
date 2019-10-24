@@ -195,4 +195,6 @@ public:
 	*@pre 리스트가 비워져있으면 안됨
 	*/
 	void ShowFolderList();
+
+	void PlayMusic();
 };
