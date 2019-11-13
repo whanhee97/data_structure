@@ -26,8 +26,6 @@ public:
 
 	SortedList<T>& operator= (SortedList<T>& S);
 	
-	T& operator[] (int index);
-
 	/**
 	*@brief 생성자 max 사이즈로 동적할당
 	*@param max값 동적할당 받을 사이즈
@@ -152,18 +150,6 @@ inline SortedList<T>& SortedList<T>::operator=(SortedList<T>& S)
 		m_Array[i] = S.m_Array[i];
 	}
 	return *this;
-}
-
-template<class T>
-inline T& SortedList<T>::operator[](int index)
-{
-
-	if (index > MAXSIZE)
-	{
-		cout << "index 초과" << endl;
-		return m_Array[0];
-	}
-	return m_Array[index];
 }
 
 template<class T>

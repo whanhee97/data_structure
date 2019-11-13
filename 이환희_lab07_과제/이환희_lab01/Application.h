@@ -1,16 +1,16 @@
 #pragma once
 #include<iostream>
 #include<fstream>
-#include<ctime>
 #include"SortedList.h"
-#include"UnSortedList.h"
 #include"ItemType.h"
 #include"CircularQueueType.h"
 #include"SortedLinkedList.h"
 #include"SingerType.h"
 #include"PlayItemType.h"
-#include"FolderType.h"
-
+#include"DoublyLinkedList.h"
+#include"UnSortedList.h"
+#include<ctime>
+#include"BinarySearchTree.h"
 
 using namespace std;
 
@@ -27,10 +27,11 @@ class Application
 	ifstream m_InFile;
 	ofstream m_OutFile;
 	SortedList<ItemType> m_List;
-	CircularQueueType<PlayItemType> m_PlayList;
-	SortedLinkedList<SingerType> m_SingerList;
-	CircularQueueType<PlayItemType> m_RandomPlay;
-	SortedList<FolderType> m_FolderList;
+	DoublyLinkedList<PlayItemType> m_PlayList; // 플레이리스트
+	DoublyLinkedList<PlayItemType> m_PLSortedByFreq; // 플레이한 횟수순으로 플레이하는 플레이리스트
+	DoublyLinkedList<PlayItemType> m_RandomPlay; // 셔플 플레이리스트
+
+	BinarySearchTree<SingerType> m_SingerList;
 
 	int m_Command;
 
@@ -126,7 +127,8 @@ public:
 	*/
 	void ReplaceMusic();
 
-
+	//---------------플레이리스트------------------
+	
 	/**
 	*@brief 리스트에서 플레이리스트로 추가
 	*@pre 리스트가 비워져있으면 안됨
@@ -143,12 +145,17 @@ public:
 	 
 
 	/**
-	*@brief 플레이리스트를 하나씩 플레이한다
+	*@brief 플레이리스트를 추가된 순으로 하나씩 플레이한다
 	*@pre 플레이리스트가 비워져있으면 안됨
 	*/
-	void PlayInsertOrder();
-	
+	void PlayInsertOrder(); //PlayIOAddTime 과 같음
 
+	/**
+	*@brief 플레이리스트를 자주플레이한 순으로 하나씩 플레이한다
+	*@pre 플레이리스트가 비워져있으면 안됨
+	*/
+	void PlayIOFreq();
+	
 
 	/**
 	*@brief 아이템 지우기
@@ -156,13 +163,14 @@ public:
 	*@post 플레이리스트에 아이템이 지워짐.
 	*/
 	void DeleteFrPlayList();
-	
+
 	/**
-	*@brief 랜덤재생
+	*@brief 랜덤 재생
 	*@pre 리스트가 비워져있으면 안됨
-	*@post 플레이리스트에 아이템을 랜덤으로 재생후 다 끝나면 리스트를 지움.
+	*@post 랜덤플레이리스트가 셔플됨.
 	*/
-	void ShufflePlay();
+	void SufflePlay();
+	
 
 	//-----------------------------------
 
@@ -180,21 +188,10 @@ public:
 	*/
 	void AddSong();
 
-
 	/**
-	*@brief 아이템 지우기
-	*@pre 리스트가 비워져있으면 안됨
-	*@post 곡 리스트에 아이템이 지워짐.
+	*@brief 싱어리스트의 송리스트에서 곡 삭제.
+	*@pre 리스트가 존재하고 리스트가 비워져있으면 안됨
+	*@post 싱어리스트의 송리스트에 곡이 삭제됨.
 	*/
 	void DeleteSong();
-	//----------------------------------------
-	
-
-	/**
-	*@brief 폴더보이기
-	*@pre 리스트가 비워져있으면 안됨
-	*/
-	void ShowFolderList();
-
-	void PlayMusic();
 };

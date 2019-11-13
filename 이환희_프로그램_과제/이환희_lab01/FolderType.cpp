@@ -62,3 +62,14 @@ FolderType& FolderType::operator=(const FolderType& f)
 	return *this;
 }
 
+bool FolderType::operator>(FolderType& f)
+{
+	return (this->name > f.name);
+}
+
+bool FolderType::operator<(FolderType& f)
+{
+	return (this->name < f.name);
+}
+
+

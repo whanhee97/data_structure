@@ -62,5 +62,8 @@ public:
 	FolderType& operator=(const FolderType& f);
 
 
+	bool operator>(FolderType& f);
+	bool operator<(FolderType& f);
+
 };
 
