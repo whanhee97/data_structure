@@ -98,6 +98,10 @@ void Application::Run()
 			ShowFolderList();
 			break;
 
+		case 19:
+			RecommendMusic();
+			break;
+
 		case 0:
 			return;
 
@@ -139,6 +143,7 @@ int Application::GetCommand()
 	cout << "\t  18 : Folder List" << endl;
 
 	cout << endl << "\t-------- System --------" << endl;
+	cout << "\t  19 : Recommend Music" << endl;
 	cout << "\t   0 : Quit" << endl;
 
 	cout << endl << "\t Choose a Command--> ";
@@ -938,4 +943,142 @@ void Application::PlayMusic()
 		}
 	}
 
+}
+
+void Application::RecommendMusic()
+{
+	FolderType Ballade, Hiphop, RnB, Indie, Rock;//발라드 힙합 안앤비 인디 락
+
+	ItemType temp;
+	int genre;
+	int Length = m_List.GetLength();
+
+	m_List.ResetList();
+	int Curpointer = m_List.GetNextItem(temp);
+	genre = temp.GetGenre();
+
+	while (Curpointer < Length && Curpointer != -1)
+	{
+		if (temp.GetGenre() == 1)
+		{
+			Ballade.AddSong(temp);
+		}
+		else if (temp.GetGenre() == 2)
+		{
+			Hiphop.AddSong(temp);
+		}
+		else if (temp.GetGenre() == 3)
+		{
+			RnB.AddSong(temp);
+		}
+		else if (temp.GetGenre() == 4)
+		{
+			Indie.AddSong(temp);
+		}
+		else
+		{
+			Rock.AddSong(temp);
+		}
+		Curpointer = m_List.GetNextItem(temp);
+		genre = temp.GetGenre();
+	}
+	//-----------------------------------------장르별로 폴더에 분류완료------------------
+
+	cout << "추천 받을 곡의 장르를 입력하시오(1.발라드  2.힙합/댄스  3.R&B  4.인디  5.락): ";
+	cin >> genre;
+	int RandRec; //랜덤추천 변수
+	srand(time(NULL));
+
+	switch (genre)
+	{
+	case 1:
+		Length = Ballade.GetSongList()->GetLength();  //길이 받아서
+		if (Length == 0)
+		{
+			cout << "해당 장르의 곡이 존재하지 않습니다." << endl;
+			break;
+		}
+		RandRec = (rand() % (Length-1))+1; //랜덤 변수 1~ Length 저장
+		Ballade.GetSongList()->ResetList();
+		for (int i = 0; i < RandRec; i++) //랜덤변수 만큼 겟넥스트아이템
+		{
+			Ballade.GetSongList()->GetNextItem(temp);
+		}
+		cout << "\n\t<<<< 이 노래는 어때요? >>>>" << endl;
+		temp.DisplayRecordOnScreen();
+
+		break;
+	case 2:
+		Length = Hiphop.GetSongList()->GetLength();
+		if (Length == 0)
+		{
+			cout << "해당 장르의 곡이 존재하지 않습니다." << endl;
+			break;
+		}
+		RandRec = (rand() % (Length - 1)) + 1;
+		Hiphop.GetSongList()->ResetList();
+		for (int i = 0; i < RandRec; i++)
+		{
+			Hiphop.GetSongList()->GetNextItem(temp);
+		}
+		cout << "\n\t<<<< 이 노래는 어때요? >>>>" << endl;
+		temp.DisplayRecordOnScreen();
+
+		break;
+	case 3:
+		Length = RnB.GetSongList()->GetLength();
+		if (Length == 0)
+		{
+			cout << "해당 장르의 곡이 존재하지 않습니다." << endl;
+			break;
+		}
+		RandRec = (rand() % (Length - 1)) + 1;
+		RnB.GetSongList()->ResetList();
+		for (int i = 0; i < RandRec; i++)
+		{
+			RnB.GetSongList()->GetNextItem(temp);
+		}
+		cout << "\n\t<<<< 이 노래는 어때요? >>>>" << endl;
+		temp.DisplayRecordOnScreen();
+
+		break;
+	case 4:
+		Length = Indie.GetSongList()->GetLength();
+		if (Length == 0)
+		{
+			cout << "해당 장르의 곡이 존재하지 않습니다." << endl;
+			break;
+		}
+		RandRec = (rand() % (Length - 1)) + 1;
+		Indie.GetSongList()->ResetList();
+		for (int i = 0; i < RandRec; i++)
+		{
+			Indie.GetSongList()->GetNextItem(temp);
+		}
+		cout << "\n\t<<<< 이 노래는 어때요? >>>>" << endl;
+		temp.DisplayRecordOnScreen();
+
+		break;
+	case 5:
+
+		Length = Rock.GetSongList()->GetLength();
+		if (Length == 0)
+		{
+			cout << "해당 장르의 곡이 존재하지 않습니다." << endl;
+			break;
+		}
+		RandRec = (rand() % (Length - 1)) + 1;
+		Rock.GetSongList()->ResetList();
+		for (int i = 0; i < RandRec; i++)
+		{
+			Rock.GetSongList()->GetNextItem(temp);
+		}
+		cout << "\n\t<<<< 이 노래는 어때요? >>>>" << endl;
+		temp.DisplayRecordOnScreen();
+
+		break;
+	default:
+		break;
+	}
+	
 }

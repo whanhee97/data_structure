@@ -195,6 +195,15 @@ public:
 	*@pre 리스트가 비워져있으면 안됨
 	*/
 	void ShowFolderList();
-
+	
+	/**
+	*@brief 한 곡씩 플레이하고 플레이리스트에 저장
+	*/
 	void PlayMusic();
+
+
+	/**
+	*@brief 장르별로 노래 추천
+	*/
+	void RecommendMusic();
 };

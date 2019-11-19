@@ -70,7 +70,7 @@ void ItemType::DisplayRecordOnScreen()
 	cout << "\tName : " << m_Name << endl;
 	cout << "\tComposer : " << m_Composer << endl;
 	cout << "\tSinger : " << m_Singer << endl;
-	cout << "\tGenre : " << m_Genre << endl;
+	cout << "\tGenre(1.¹ß¶óµå 2.ÈüÇÕ/´í½º 3.R&B 4.ÀÎµð 5.¶ô) : " << m_Genre << endl;
 	cout << "\tID : " << m_Id << endl;
 }
 
