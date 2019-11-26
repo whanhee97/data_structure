@@ -10,6 +10,7 @@
 #include"SingerType.h"
 #include"PlayItemType.h"
 #include"FolderType.h"
+#include"DoublyLinkedList.h"
 
 
 using namespace std;
@@ -28,7 +29,7 @@ class Application
 	ofstream m_OutFile;
 	SortedList<ItemType> m_List;
 	CircularQueueType<PlayItemType> m_PlayList;
-	SortedLinkedList<SingerType> m_SingerList;
+	DoublyLinkedList<SingerType> m_SingerList;
 	CircularQueueType<PlayItemType> m_RandomPlay;
 	SortedList<FolderType> m_FolderList;
 
@@ -187,6 +188,8 @@ public:
 	*@post 곡 리스트에 아이템이 지워짐.
 	*/
 	void DeleteSong();
+
+	void ShowAllSinger();
 	//----------------------------------------
 	
 

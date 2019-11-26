@@ -16,49 +16,69 @@ void Application::Run()
 	while (1)
 	{
 		m_Command = GetCommand();
+		system("cls");
 		switch (m_Command)
 		{
+
 		case 1:
 			AddMusic();
+			system("cls");
 			break;
 		case 2:
 			DeleteMusic();
+			system("cls");
 			break;
 
 		case 3:
 			ReplaceMusic();
+			system("cls");
 			break;
 
 		case 4:
 			SearchIDByBinary();
+			system("cls");
 			break;
 
 		case 5:
 			DisplayAllMusic();
+			system("pause");
+			system("cls");
 			break;
 
 		case 6:
 			m_List.MakeEmpty();
+			cout << "\n곡을 모두 삭제하였습니다." << endl;
+			system("pause");
+			system("cls");
 			break;
 
 		case 7:
 			ReadDataFromFile();
+			cout << "\n곡을 파일로부터 불러왔습니다." << endl;
+			system("pause");
+			system("cls");
 			break;
 
 		case 8:
 			WriteDataToFile();
+			cout << "\n곡을 파일에 저장하였습니다." << endl;
+			system("pause");
+			system("cls");
 			break;
 
 		case 9:
 			SearchBySinger();
+			system("cls");
 			break;
 
 		case 10:
 			SearchByGenre();
+			system("cls");
 			break;
 
 		case 11:
 			PlayMusic();
+			system("cls");
 			break;
 
 		case 12:
@@ -67,39 +87,62 @@ void Application::Run()
 			cout << "Answer : ";
 			cin >> a;
 			if (a == 1)
+			{
 				PlayInsertOrder();
+				system("cls");
+			}
 			else if (a == 2)
+			{
 				ShufflePlay();
+				system("cls");
+			}
 			else
+			{
 				cout << "잘못입력!!" << endl;
+				system("cls");
+			}
 			break;
 
 		case 13:
 			PrintAll();
+			system("pause");
+			system("cls");
 			break;
 
 		case 14:
 			DeleteFrPlayList();
+			system("cls");
 			break;
 
 		case 15:
 			AddSinger();
+			system("cls");
 			break;
 		
 		case 16:
 			AddSong();
+			system("cls");
 			break;
 		
 		case 17:
 			DeleteSong();
+			system("cls");
 			break;
-
 		case 18:
-			ShowFolderList();
+			ShowAllSinger();
+			system("pause");
+			system("cls");
 			break;
 
 		case 19:
+			ShowFolderList();
+			system("cls");
+			break;
+
+		case 20:
 			RecommendMusic();
+			system("pause");
+			system("cls");
 			break;
 
 		case 0:
@@ -107,6 +150,8 @@ void Application::Run()
 
 		default:
 			cout << "\tIllegal selection...\n";
+			system("pause");
+			system("cls");
 			break;
 		}
 	}
@@ -138,12 +183,13 @@ int Application::GetCommand()
 	cout << "\t  15 : Add Singer" << endl;
 	cout << "\t  16 : Add Song" << endl;
 	cout << "\t  17 : Delete Song(Only in SongList)" << endl;
+	cout << "\t  18 : Show Singer List" << endl;
 
 	cout << endl << "\t-------- Folder --------" << endl;
-	cout << "\t  18 : Folder List" << endl;
+	cout << "\t  19 : Folder List" << endl;
 
 	cout << endl << "\t-------- System --------" << endl;
-	cout << "\t  19 : Recommend Music" << endl;
+	cout << "\t  20 : Recommend Music" << endl;
 	cout << "\t   0 : Quit" << endl;
 
 	cout << endl << "\t Choose a Command--> ";
@@ -156,8 +202,16 @@ int Application::GetCommand()
 int Application::AddMusic()
 {
 	ItemType temp;
+	int result;
 	temp.SetRecordFromKB();
-	m_List.Add(temp);
+	result = m_List.Add(temp);
+	if (result == 1)
+	{
+		cout << "\n추가하였습니다." << endl;
+		system("pause");
+	}
+	else
+		system("pause");
 	return 0;
 }
 
@@ -234,13 +288,14 @@ void Application::SearchBySinger()
 	cout << "검색할 가수명을 입력하시오: ";
 	cin >> singer; //가수명 입력받고
 	stemp.SetName(singer); //임시 변수에 가수명 셋팅
-	int result = m_SingerList.Retrieve(stemp); // 결과가 1이면 찾은것 0이면 못찾은것. 찾으면 stemp에 값이 복사됨. // 여기서 stemp가 얕은복사가됨
+	int result = m_SingerList.Get(stemp); // 결과가 1이면 찾은것 0이면 못찾은것. 찾으면 stemp에 값이 복사됨. // 여기서 stemp가 얕은복사가됨
 	if (result == 1) //찾았으면
 	{
 		stemp.Print(); //이름 나이 성별 출력하고
 		if (stemp.GetSongList()->IsEmpty()) // stemp.GetSongList() 는 stemp에있는 곡 리스트(id만 저장된 큐)
 		{
 			cout << "Queue is Empty" << endl;
+			system("pause");
 			return;
 		}
 		ItemType temp; //아이템타입의 임시변수
@@ -263,8 +318,9 @@ void Application::SearchBySinger()
 	}
 	else
 	{
-		cout << "해당하는 이름의 가수가 없습니다." << endl;
+		cout << "\n해당하는 이름의 가수가 없습니다." << endl;
 	}
+	system("pause");
 }
 
 void Application::SearchByGenre()
@@ -287,6 +343,7 @@ void Application::SearchByGenre()
 		}
 		Curpointer = m_List.GetNextItem(temp);
 	}
+	system("pause");
 }
 
 void Application::SearchIDByBinary()
@@ -303,12 +360,13 @@ void Application::SearchIDByBinary()
 	result = m_List.RetrieveBinary(temp);
 	if (result == 0)
 	{
-		cout << "해당 ID가 없습니다." << endl;
+		cout << "\n해당 ID가 없습니다." << endl;
 	}
 	else
 	{
 		temp.DisplayRecordOnScreen();
 	}
+	system("pause");
 }
 
 
@@ -318,34 +376,41 @@ void Application::DeleteMusic()
 	ItemType temp;
 	string id;
 	int result;
-
+	DisplayAllMusic();
 	cout << "ID를 입력하시오 ->";
 	cin >> id;
 	temp.SetId(id);
 	result = m_List.Delete(temp);
 	if (result == -1)
 	{
-		cout << "해당 곡이 없습니다." << endl;
+		cout << "\n해당 곡이 없습니다." << endl;
 	}
-
+	else
+	{
+		cout << "\n곡 삭제를 완료하였습니다." << endl;
+	}
+	system("pause");
 }
 
 void Application::ReplaceMusic()
 {
 	ItemType temp;
 	string id;
-
+	DisplayAllMusic();
 	cout << "ID를 입력하시오 ->";
 	cin >> id;
 	temp.SetId(id);
 	if (m_List.Get(temp) == -1)
 	{
-		cout << "해당 학생이 없습니다." << endl;
+		cout << "\n해당 학생이 없습니다." << endl;
+		system("pause");
 		return;
 	}
-
+	
 	temp.SetRecordFromKB();
 	m_List.Replace(temp);
+	cout << "\n교체를 완료하였습니다." << endl;
+	system("pause");
 }
 
 //-------------------------------------------------------
@@ -458,6 +523,7 @@ void Application::DeleteFrPlayList()
 	if (m_PlayList.IsEmpty())
 	{
 		cout << "Queue is Empty" << endl;
+		system("pause");
 		return;
 	}
 	PlayItemType item; // 임시로 아이템 만들고
@@ -467,13 +533,13 @@ void Application::DeleteFrPlayList()
 	int result = m_PlayList.Delete(item);
 	if (result == 0)
 	{
-		cout << "해당 아이디가 없습니다." << endl;
+		cout << "\n해당 아이디가 없습니다." << endl;
 	}
 	else
 	{
-		cout << "삭제가 완료되었습니다." << endl;
+		cout << "\n삭제가 완료되었습니다." << endl;
 	}
-
+	system("pause");
 }
 
 void Application::ShufflePlay()
@@ -600,7 +666,12 @@ void Application::AddSinger()
 {
 	SingerType item;
 	item.SetRecordByKB();
-	m_SingerList.AddItem(item);
+	m_SingerList.Add(item);
+
+	
+	cout << "\n추가를 완료하였습니다." << endl;
+
+	system("pause");
 }
 
 void Application::AddSong()
@@ -613,7 +684,7 @@ void Application::AddSong()
 	cout << "검색할 가수명을 입력하시오 : ";
 	cin >> _name;
 	item.SetName(_name);
-	int result = m_SingerList.Retrieve(item);
+	int result = m_SingerList.Get(item);
 	if (result == 1)
 	{
 		cout << "곡을 추가 합니다." << endl;
@@ -642,44 +713,90 @@ void Application::AddSong()
 			{
 				item.AddSong(_id);
 				m_SingerList.Replace(item);
+				cout << "\n추가를 완료하였습니다." << endl;
 			}
 			else
 			{
-				cout << "해당 ID가 없습니다." << endl;
+				cout << "\n해당 ID가 없습니다." << endl;
 			}
-
 		}
 		else
 		{
-			cout << "잘못된 입력입니다." << endl;
+			cout << "\n잘못된 입력입니다." << endl;
 		}
 	}
 	else
 	{
-		cout << "해당하는 가수가 없습니다." << endl;
+		cout << "\n해당하는 가수가 없습니다." << endl;
 		
 	}
+	system("pause");
 }
 void Application::DeleteSong()
 {
 	SingerType item;
 	ItemType Song;
 	string _name;
+	
+	ShowAllSinger();
+	
 	cout << "검색할 가수명을 입력하시오 : ";
 	cin >> _name;
 	item.SetName(_name);
-	int result = m_SingerList.Retrieve(item);
+	int result = m_SingerList.Get(item);
 	if (result == 1)
 	{
-		cout << "곡을 제거 합니다." << endl;
+		cout << "\n곡을 제거 합니다." << endl;
 		Song.SetIdFromKB();
 		item.DeleteSong(Song.GetId()); // id찾아서 송리스트에서 제거
 		m_SingerList.Replace(item);//리플레이스
 	}
 	else
 	{
-		cout << "해당하는 가수가 없습니다." << endl;
+		cout << "\n해당하는 가수가 없습니다." << endl;
 	}
+	system("pause");
+}
+
+void Application::ShowAllSinger()
+{
+	cout << "\t---------- SingerList----------" << endl;
+	SingerType stemp;
+	DoublyIterator<SingerType> itor(m_SingerList);
+	itor.Next();
+	while (itor.NextNotNull())
+	{
+		stemp = itor.GetCurrentNode().info;
+		cout << endl;
+		stemp.Print(); //이름 나이 성별 출력하고
+		if (stemp.GetSongList()->IsEmpty()) // stemp.GetSongList() 는 stemp에있는 곡 리스트(id만 저장된 큐)
+		{
+			cout << "Queue is Empty" << endl;
+			return;
+		}
+		ItemType temp; //아이템타입의 임시변수
+		string data;
+		stemp.GetSongList()->ResetList(); //컬포인터 리셋하고
+		int CurPointer = stemp.GetSongList()->GetNextItem(data);// 컬포인터에 현재 컬포인트 저장하고 data에 Songlist의 값 받아오기 data에 id가 받아와짐
+		while (1)
+		{
+			temp.SetId(data); //아이디 셋팅하고
+			m_List.RetrieveBinary(temp); // temp와 같은 아이디 검색해서 있으면 받아옴
+			if (CurPointer == stemp.GetSongList()->GetRear())// 컬포인터와 큐의 rear가 같으면 출력하고 브레이크
+			{
+				temp.DisplayRecordOnScreen();
+				break;
+			}
+			temp.DisplayRecordOnScreen();
+			CurPointer = stemp.GetSongList()->GetNextItem(data);
+
+		}
+		cout << endl;
+		itor.Next();
+	}
+
+	cout << "\t---------- SingerList----------" << endl << endl;
+
 }
 
 void Application::ShowFolderList()
@@ -710,6 +827,7 @@ void Application::ShowFolderList()
 		cout << endl << "\t Choose a Command--> ";
 		cin >> answer;
 		
+
 		FolderType tempF;
 		PlayItemType PlayTemp;
 		ItemType item;
@@ -722,12 +840,23 @@ void Application::ShowFolderList()
 			cout << "생성할 폴더 ";
 			tempF.SetNameFromKB();
 			m_FolderList.Add(tempF);
+			system("cls");
 			break;
 
 		case 2: //폴더 삭제
 			cout << "삭제할 폴더 ";
 			tempF.SetNameFromKB();
-			m_FolderList.Delete(tempF);
+			result = m_FolderList.Delete(tempF);
+			if (result == 1)
+			{
+				cout << "\n삭제가 완료되었습니다." << endl;
+			}
+			else
+			{
+				cout << "\n해당이름의 폴더가 없습니다." << endl;
+			}
+			system("pause");
+			system("cls");
 			break;
 
 		case 3: // 폴더 이름변경
@@ -741,16 +870,20 @@ void Application::ShowFolderList()
 				cin >> cname;
 				tempF.SetName(cname);
 				m_FolderList.Replace(tempF);
+				cout << "\n변경을 완료하였습니다." << endl;
 			}
 			else
 			{
-				cout << "해당 이름의 폴더를 찾을 수 없습니다." << endl;
+				cout << "\n해당 이름의 폴더를 찾을 수 없습니다." << endl;
 			}
+			system("pause");
+			system("cls");
 			break;
 
 		case 4: // 폴더 접근
 			cout << "접근할 폴더 ";
 			tempF.SetNameFromKB();
+			system("cls");
 			result = m_FolderList.RetrieveBinary(tempF);
 			if (result == 1)
 			{
@@ -768,7 +901,7 @@ void Application::ShowFolderList()
 					cout << "4. Exit" << endl;
 					cout << "Your Command : ";
 					cin >> answer;
-					
+
 					if (answer == 4)
 					{
 						break;
@@ -792,7 +925,8 @@ void Application::ShowFolderList()
 						{
 							cout << "해당 ID가 없습니다." << endl;
 						}
-
+						system("pause");
+						system("cls");
 						break;
 
 					case 2: //곡 삭제
@@ -800,6 +934,8 @@ void Application::ShowFolderList()
 						item.SetIdFromKB();
 						tempF.DeleteSong(item);
 						m_FolderList.Replace(tempF);
+						system("pause");
+						system("cls");
 						break;
 
 					case 3: //플레이 리스트에 추가
@@ -858,21 +994,27 @@ void Application::ShowFolderList()
 						{
 							cout << "잘못된 입력입니다." << endl;
 						}
+						system("pause");
+						system("cls");
 						break;
 
 					default:
 						cout << "\tIllegal selection...\n";
+						system("pause");
+						system("cls");
 						break;
 
 					}
 				}
 
-				
 			}
 			else
 			{
 				cout << "해당 이름의 폴더를 찾을 수 없습니다." << endl;
+				system("pause");
+				system("cls");
 			}
+			system("cls");
 			break;
 		
 		case 5:
@@ -880,6 +1022,8 @@ void Application::ShowFolderList()
 
 		default:
 			cout << "\tIllegal selection...\n";
+			system("pause");
+			system("cls");
 			break;
 
 		}

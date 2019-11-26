@@ -154,7 +154,7 @@ int SortedLinkedList<T>::AddItem(T& item)
 
 		while (MoreToSearch)
 		{
-			if (item < location->info) // 아이템이 로케이션데이터보다 작으면 이동 x (맨 앞에 와야하므로)
+			if (item < location->info) // 아이템이 로케이션데이터보다 작으면 이동 x (앞에 와야하므로)
 			{
 				MoreToSearch = false;
 			}
@@ -170,12 +170,12 @@ int SortedLinkedList<T>::AddItem(T& item)
 			}
 
 		}
-		if (preloc == location) // 안 움직였다면
+		if (preloc == location) // 안 움직였다면 템프를 로케이션 다음으로 넣기
 		{
 			tempPtr->next = location->next;
 			location->next = tempPtr;
 		}
-		else
+		else //움직였으면 프리록과 로케이션 중간에 끼워 넣기
 		{
 			preloc->next = tempPtr;
 			tempPtr->next = location;
